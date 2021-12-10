@@ -27,28 +27,96 @@ const movieDB = {
 const adv = document.querySelectorAll('.promo__adv img'),
       poster = document.querySelector('.promo__bg'),
       genre = poster.querySelector('.promo__genre'),
-      movieList = document.querySelector('.promo__interactive-list');
+      movieList = document.querySelector('.promo__interactive-list'),
+      formAdd = document.querySelector('.add'),
+      newFilm = document.querySelector('.adding__input'),
+      btn = document.querySelector('button'),
+      favoriteFilm = document.querySelector('#check'),
+      delLi = document.querySelectorAll('.promo__interactive-item');
+      
+let newDel = document.createElement('button'),
+    oldDel = document.querySelectorAll('.delete');
+
       
 
 
-adv.forEach(item => {
-    item.remove();
-});
+const deleteAdv = () => {
+    adv.forEach(item => {
+        item.remove();
+    });
+};
 
-genre.textContent = 'драма';
 
-poster.style.backgroundImage = 'url("img/bg.jpg")';
 
-movieList.innerHTML = "";
+const makeChanges = () => {
+    genre.textContent = 'драма';
+    poster.style.backgroundImage = 'url("img/bg.jpg")';
+};
 
-movieDB.movies.sort();
 
-movieDB.movies.forEach((film, i) => {
-    movieList.innerHTML += 
+
+const sortArr = (arr) => {
+    movieDB.movies.sort();
+};
+
+
+
+function createMovieList (films, parent) {
+    parent.innerHTML = "";
+    films.forEach((film, i) => {
+    parent.innerHTML += 
     `<li class="promo__interactive-item"> ${i + 1} ${film}
         <div class="delete"></div>
     </li>`;
+    });
+
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+            btn.parentElement.remove();
+            movieDB.movies.splice(i, 1);
+            createMovieList(movieDB.movies, movieList);
+        });
+    });
+}
+
+
+
+btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    if (newFilm.value.length > 21) {
+        movieDB.movies[movieDB.movies.length] = newFilm.value.substr(0, 21) + '...';
+    } else {
+        movieDB.movies[movieDB.movies.length] = newFilm.value;
+    }
+    if (favoriteFilm.checked) {
+        alert('new favorite film');
+    }
+
+    
+    
+    sortArr();  
+
+    createMovieList (movieDB.movies, movieList);
+
+    formAdd.reset();
 });
+
+
+deleteAdv();
+makeChanges();
+sortArr();
+createMovieList (movieDB.movies, movieList);
+
+
+
+
+
+
+
+
+
+
 
 
 
